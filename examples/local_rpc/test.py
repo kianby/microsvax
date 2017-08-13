@@ -11,11 +11,19 @@ from microsvax import mservice
 
 
 @timer(seconds=1)
-def compute_every_3_seconds():
+def compute1():
     a = random.randint(1, 20)
     b = random.randint(1, 20)
     result = mservice.call_rpc("add.numbers", a, b)
-    print("{} + {} = {}".format(a, b, result))
+    print("[1] => {} + {} = {}".format(a, b, result))
+
+
+@timer(seconds=1)
+def compute2():
+    a = random.randint(1, 20)
+    b = random.randint(1, 20)
+    result = mservice.call_rpc("add.numbers", a, b)
+    print("[2] => {} + {} = {}".format(a, b, result))
 
 
 @rpc(name="add.numbers")
