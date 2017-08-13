@@ -41,7 +41,7 @@ def rpc(name):
                 break
             msg = await event_channel.get()
             args = pickle.loads(msg)
-            print('rpc call received {}'.format(args))
+            #print('rpc call received {}'.format(args))
             result = func(*args)
             mservice.set_value("res-{}".format(name), result)
 
