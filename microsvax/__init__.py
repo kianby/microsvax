@@ -57,22 +57,21 @@ class Microservice:
         # TODO utiliser setx avec un timeout pour ne pas pourrir redis
         r.set(name, value)
 
-    def call_rpc(self, name, *args):
+    def call_rpc(self, timeout, name,  *args):
         r = redis.StrictRedis(host='localhost', port=6379, db=0)
         req_id = '{}-{}'.format(self.id, time.time())
         args = (req_id,) + args
         value = pickle.dumps(args)
         r.publish(name, value)
         result = None
-        # TODO gerer un timeout sur l'appel
-        result_key = "res-{}-{}".format(name,req_id)
-        for i in range(5):
+        result_key = "res-{}-{}".format(name, req_id)
+        for i in range(timeout):
             time.sleep(1)
             if r.exists(result_key):
                 result = r.get(result_key)
+                result = pickle.loads(result)
                 r.delete(result_key)
                 break
-        return pickle.loads(result)
-
+        return result
 
 mservice = Microservice()

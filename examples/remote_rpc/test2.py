@@ -14,21 +14,16 @@ from microsvax import mservice
 def compute1():
     a = random.randint(1, 20)
     b = random.randint(1, 20)
-    result = mservice.call_rpc(1, "add.numbers", a, b)
-    print("[1] => {} + {} = {}".format(a, b, result))
+    result = mservice.call_rpc(3, "add.numbers", a, b)
+    print("[REMOTE 1] => {} + {} = {}".format(a, b, result))
 
 
 @timer(seconds=1)
 def compute2():
     a = random.randint(1, 20)
     b = random.randint(1, 20)
-    result = mservice.call_rpc(1, "add.numbers", a, b)
-    print("[2] => {} + {} = {}".format(a, b, result))
-
-
-@rpc(name="add.numbers")
-def add_number(a, b):
-    return a + b
+    result = mservice.call_rpc(3, "add.numbers", a, b)
+    print("[REMOTE 2] => {} + {} = {}".format(a, b, result))
 
 
 time.sleep(10)
