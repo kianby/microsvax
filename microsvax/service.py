@@ -42,9 +42,11 @@ def rpc(name):
                 break
             msg = await event_channel.get()
             args = pickle.loads(msg)
-            result = func(*args)
+            req_id = args[0]
+            func_args = args[1:]
+            result = func(*func_args)
             value = pickle.dumps(result)
-            mservice.set_value("res-{}".format(name), value)
+            mservice.set_value("res-{}-{}".format(name, req_id), value)
 
     async def monitor(r, admin_channel, coroutine_info):
         await admin_channel.wait_message()

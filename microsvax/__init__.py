@@ -31,7 +31,7 @@ class CoroutineInfo:
 class Microservice:
 
     def __init__(self):
-        self.id = "MSVC-%d" % int(time.time())
+        self.id = 'MSVC-{}'.format(time.time())
         self.coroutines = []
 
     def register(self, coroutine_info):
@@ -59,12 +59,13 @@ class Microservice:
 
     def call_rpc(self, name, *args):
         r = redis.StrictRedis(host='localhost', port=6379, db=0)
-        # TODO ajouter un request id pour gerer appels simultanes
+        req_id = '{}-{}'.format(self.id, time.time())
+        args = (req_id,) + args
         value = pickle.dumps(args)
         r.publish(name, value)
         result = None
         # TODO gerer un timeout sur l'appel
-        result_key = "res-{}".format(name)
+        result_key = "res-{}-{}".format(name,req_id)
         for i in range(5):
             time.sleep(1)
             if r.exists(result_key):
