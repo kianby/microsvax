@@ -13,6 +13,7 @@ from microsvax import mservice
 def timer(seconds):
 
     async def coroutine(func, coroutine_info):
+        await asyncio.sleep(seconds)
         while not coroutine_info.must_stop:
             func()
             await asyncio.sleep(seconds)
@@ -41,9 +42,9 @@ def rpc(name):
                 break
             msg = await event_channel.get()
             args = pickle.loads(msg)
-            #print('rpc call received {}'.format(args))
             result = func(*args)
-            mservice.set_value("res-{}".format(name), result)
+            value = pickle.dumps(result)
+            mservice.set_value("res-{}".format(name), value)
 
     async def monitor(r, admin_channel, coroutine_info):
         await admin_channel.wait_message()
@@ -64,7 +65,6 @@ def rpc(name):
         loop.close()
 
     def wrapper(func):
-        print(name)
         loop = asyncio.new_event_loop()
         coroutine_info = CoroutineInfo(CoroutineKind.RPC, loop)
         thread = Thread(target=start_loop, args=(loop, func, coroutine_info))

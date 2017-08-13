@@ -71,7 +71,7 @@ class Microservice:
                 result = r.get(result_key)
                 r.delete(result_key)
                 break
-        return result
+        return pickle.loads(result)
 
 
 mservice = Microservice()
